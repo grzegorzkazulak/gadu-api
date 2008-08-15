@@ -218,7 +218,7 @@ final class GaduAPICore {
     public function doRequest($method, $uri, $params = null, $headers = null, $ssl = false, $responseType = 'phps'){
         for($c=0; $c < $this->requestRetryCount; $c++){
             $acc_headers = array();
-            if(!empty($this->oauthConsumer->key)){
+            if(!empty($this->oauthConsumer->key) && (!empty($method) && $uri)){
                 $acc_req     = OAuthRequest::from_consumer_and_token($this->oauthConsumer, 
                                                    $this->oauthToken, 
                                                    isset($params['_method']) ? $params['_method'] : $method, 

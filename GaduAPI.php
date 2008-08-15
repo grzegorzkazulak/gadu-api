@@ -38,48 +38,50 @@ class GaduAPI extends GaduAPICore
     public function getUser($uin){
         return $this->doRequest('GET', '/users/'.(int)$uin);
     }
+
     /**
-    * @desc Zapisanie danych użytkownika o podanym numerze UIN
-    * 
-    * @param string     $uin    numer użytkownika
-    * @param mixed      $params parametry do zapisania
-    * @return mixed     dane o użytkowniku
+     * @desc Zapisanie danych użytkownika o podanym numerze UIN
+     * 
+     * @param string     $uin    numer użytkownika
+     * @param mixed      $params parametry do zapisania
+     * @return mixed     dane o użytkowniku
     */
     public function saveUser($uin, $params){
         return $this->doRequest('POST', '/users/'.(int)$uin, array_merge((array) $params, array('_method' => 'PUT')));
     }
-    /**
-    * @desc Szukanie użytkowników w katalogu publicznym
-    * 
-    * @param array      $searchParams   kryteria wyszukiwania
-    * @return mixed     dane o użytkowniku
+    
+	/**
+     * @desc Szukanie użytkowników w katalogu publicznym
+     * 
+     * @param array      $searchParams   kryteria wyszukiwania
+     * @return mixed     dane o użytkowniku
     */    
     public function getUsers($searchParams){
         return $this->doRequest('GET', '/users', (array) $searchParams);
     }
-    /**
-    * @desc Pobranie listy URI do awatarów użytkownika o podanym numerze UIN
-    * 
-    * @param string     $uin            numer użytkownika 
-    * @param int        $avatarNumber   numer awatara użytkowniaka
-    * @return mixed     czy operacja się powiodła
+    
+	/**
+     * @desc Pobranie listy URI do awatarów użytkownika o podanym numerze UIN
+     * 
+     * @param string     $uin            numer użytkownika 
+     * @param int        $avatarNumber   numer awatara użytkowniaka
+     * @return mixed     czy operacja się powiodła
     */    
     public function getUserAvatar($uin, $avatarNumber = null){
-    
         return $this->doRequest('GET', '/avatars/'.(int)$uin.($avatarNumber != null ? '/'.(int) $avatarNumber : ''));
     }
-    /**
-    * @desc Zapisanie awatara użytkownika o podanym numerze UIN
-    * 
-    * @param string     $uin            numer użytkownika 
-    * @param int        $avatarNumber   numer awatara użytkowniaka
-    * @param mixed      $file           nazwa lokalnego pliku z awatarem
-    * @return mixed     czy operacja się powiodła
+    
+	/**
+     * @desc Zapisanie awatara użytkownika o podanym numerze UIN
+     * 
+     * @param string     $uin            numer użytkownika 
+     * @param int        $avatarNumber   numer awatara użytkowniaka
+     * @param mixed      $file           nazwa lokalnego pliku z awatarem
+     * @return mixed     czy operacja się powiodła
     */    
     public function saveUserAvatar($uin, $avatarNumber, $file){
  
         return $this->doRequest('POST', '/avatars/'.(int)$uin.'/'.(int) $avatarNumber, array('avatar' => '@'.realpath($file),'_method' => 'PUT'));
     }
-    
 }
 ?>
