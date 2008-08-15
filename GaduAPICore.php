@@ -29,7 +29,7 @@ require_once 'OAuth.php';
 
 
 
-final class GaduAPICore {
+abstract class GaduAPICore {
     
     /**
      * @desc    Informacje z curl_exec
@@ -52,7 +52,7 @@ final class GaduAPICore {
     /**
      * @desc    Typ formatu odpowiedzi z serwera.   
      * @var         integer
-    */ indenting
+    */
     protected $responseType = 'phps';
     
     /**
@@ -369,7 +369,7 @@ final class GaduAPICore {
      * @access protected 
      * @return string 
     */
-    protected function getRequestURL($method, $uri, $params = null, $ssl = false, $responseType = 'phps')
+    protected function getRequestURL($method, $uri, $params = null, $ssl = false, $responseType = 'phps'){
         return ($ssl ? 'https' : 'http').strstr($this->apiRequestUrl, '://').$uri.($responseType ? '.'.$responseType : '').(is_array($params) && count($params) > 0 && $method == 'GET' ? '?'.http_build_query($params) : '');
     }
 
