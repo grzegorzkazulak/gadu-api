@@ -52,7 +52,7 @@ final class GaduAPICore {
     /**
      * @desc    Typ formatu odpowiedzi z serwera.   
      * @var         integer
-    */
+    */ indenting
     protected $responseType = 'phps';
     
     /**
@@ -145,10 +145,10 @@ final class GaduAPICore {
     */
     public function loginUser($callbackURL){
         session_start();
-        if(isset($_SESSION['access_token'])){
+        if(empty($_SESSION['access_token'])){
             $this->setAccessToken($_SESSION['access_token']);
             $this->uin = $_SESSION['uin']; 
-        }elseif(isset($_SESSION['request_token'])){
+        }elseif(empty($_SESSION['request_token'])){
             $_SESSION['access_token'] = $this->getAccessToken($_SESSION['request_token']);
             $_SESSION['uin']          = $this->uin;   
         }
@@ -184,8 +184,8 @@ final class GaduAPICore {
      * @return bool        czy autoryzacja request token się powiodła 
     */
     public function getAccessToken($requestToken = null){
-        if($requestToken !== null){
-            if($requestToken->key === null)
+        if(!is_null($requestToken)){
+            if(is_null($requestToken->key))
                throw new GaduAPIException('Empty request token');
             for($c=0; $c < $this->requestRetryCount ; $c++){
                 $acc_req    = OAuthRequest::from_consumer_and_token($this->oauthConsumer, $requestToken, 'POST', $this->getRequestURL('POST', '/access_token'), array());
@@ -283,7 +283,7 @@ final class GaduAPICore {
                 if(!$parsedResponse = @unserialize($response)){
                     $this->lastError =  'Bad response : '.$response;
                     throw new GaduAPIParseException($this->getLastError(), 400);
-                }
+          		}
         }                                    
         return  $parsedResponse;
     }
@@ -377,20 +377,23 @@ final class GaduAPICore {
      * @desc Pobierz ostatni błąd z zapytania
      *
      * @access public
-     * @return array
+     * @return string
     */
     public function getLastError(){
         return $this->lastError;
     }
 
     /**
-     * @desc Translacja xml do php
+     * @desc Translacja XML do PHP
      *
      * @param string     $input      zawartosc dokumentu XML do zamiany ta tablice PHP
      * @access public
      * @return void
     */
     protected function parseXML($input){
+		if (empty($input))
+			throw new GaduAPIException('Response is empty', 408);
+	
         $sxml = simplexml_load_string($input); 
      
         $arr = array();
@@ -412,19 +415,25 @@ final class GaduAPICore {
     /**
      * @desc Translacja JSON do PHP
      * 
-     * @param 
+     * @param string     $input      tablica JSON do zamiany na tablicę PHP     
+     * @return string
     */
     protected function parseJSON($input){
+		if (empty($input)){
+			throw new GaduAPIException('Response is empty, Cannot translate', 408);
+		}
+			
         return json_decode($input, true);
     }
 
     /**
      * Konwertuje obiekt typu SimpleXML do tablicy PHP
      *
-     * @param string    $sxml
+     * @param string    $sxml		
      * @return void
     */
     public static function convert_simplexml_to_array($sxml) {
+		
         $arr = array();
         if ($sxml) {
           foreach ($sxml as $k => $v) {
